@@ -24,6 +24,30 @@
                                 @enderror
                             </div>
 
+                            <div class="form-group">
+                                <label class="font-weight-bold">NIM</label>
+                                <input type="text" class="form-control @error('nim') is-invalid @enderror" name="nim" value="{{ old('nim') }}" placeholder="Masukkan Nim">
+                                
+                                <!-- error message untuk nama -->
+                                @error('nim')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Prodi</label>
+                                <input type="text" class="form-control @error('prodi') is-invalid @enderror" name="prodi" value="{{ old('prodi') }}" placeholder="Masukkan Prodi">
+                                
+                                <!-- error message untuk nama -->
+                                @error('prodi')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Jenis kelamin</label>
                                 <div class="col-sm-14">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peserta;
+use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 
 class PesertaController extends Controller
@@ -30,6 +32,8 @@ class PesertaController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
+            'nim' => 'required|string|max:20',
+            'prodi' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'telepon' => 'required|string|max:20',
             'alamat' => 'required|string|max:255',
@@ -48,6 +52,8 @@ class PesertaController extends Controller
         // Simpan data peserta ke dalam database
         Peserta::create([
             'nama' => $validatedData['nama'],
+            'nim' => $validatedData['nim'],
+            'prodi' => $validatedData['prodi'],
             'jenis_kelamin' => $validatedData['jenis_kelamin'],
             'telepon' => $validatedData['telepon'],
             'alamat' => $validatedData['alamat'],
@@ -79,6 +85,8 @@ class PesertaController extends Controller
     {
         $request->validate([
             'nama' => 'required|string',
+            'nim' => 'required|string',
+            'prodi' => 'required|string',
             'jenis_kelamin' => 'required|string',
             'telepon' => 'required|string',
             'alamat' => 'required|string',
@@ -93,6 +101,8 @@ class PesertaController extends Controller
 
         // Update data peserta sesuai dengan input dari form
         $peserta->nama = $request->nama;
+        $peserta->nim = $request->nim;
+        $peserta->prodi = $request->prodi;
         $peserta->jenis_kelamin = $request->jenis_kelamin;
         $peserta->telepon = $request->telepon;
         $peserta->alamat = $request->alamat;
@@ -147,6 +157,69 @@ class PesertaController extends Controller
         return redirect()->route('peserta.tolak', ['id' => $peserta->id]);
     }
 
+    private $nomorSuratAwal = "2212/PKL/ARKA/0001"; // Nomor surat awal
+
+    private function generateNomorSurat()
+    {
+        // Memisahkan nomor urut dari nomor surat sebelumnya
+        preg_match('/(\d+)$/', $this->nomorSuratAwal, $matches);
+
+        // Mendapatkan nomor urut sebelumnya
+        $lastNumber = (int)$matches[1];
+
+        // Menambahkan satu ke nomor urut sebelumnya
+        $newNumber = $lastNumber + 1;
+
+        // Membuat nomor surat baru dengan format yang diinginkan
+        $newNomorSurat = sprintf("2212/PKL/ARKA/%04d", $newNumber);
+
+        return $newNomorSurat;
+    }
+
+    public function cetak(Request $request, $id)
+    {
+        $tanggalHariIni = Carbon::now()->format('d F Y');
+    
+        $query = Peserta::find($id);
+        $nomorSuratBaru = $this->generateNomorSurat();
+        $this->nomorSuratAwal = $nomorSuratBaru;
+        
+
+        $image=file_get_contents("assets/images/logo.png");
+        $imagedata=base64_encode($image);
+
+        // Ukuran gambar yang ingin ditampilkan di halaman PDF (dalam piksel)
+        $imageWidth = 200; // Ubah dengan lebar gambar yang diinginkan
+        $imageHeight = 100; // Ubah dengan tinggi gambar yang diinginkan
+        $imageLogo = '<img src="data:image/png;base64, ' . $imagedata . '" width="' . $imageWidth . '" height="' . $imageHeight . '">';
+
+        // ttd 
+        $image2=file_get_contents("assets/images/ttd1.png");
+        $imagedata2=base64_encode($image2);
+
+        // Ukuran gambar yang ingin ditampilkan di halaman PDF (dalam piksel)
+        $imageWidth2 = 100; // Ubah dengan lebar gambar yang diinginkan
+        $imageHeight2 = 100; // Ubah dengan tinggi gambar yang diinginkan
+        $imageTtd = '<img src="data:image/png;base64, ' . $imagedata2 . '" width="' . $imageWidth2 . '" height="' . $imageHeight2 . '">';
+
+        $image3=file_get_contents("assets/images/ttd2.png");
+        $imagedata3=base64_encode($image3);
+
+        // Ukuran gambar yang ingin ditampilkan di halaman PDF (dalam piksel)
+        $imageWidth3 = 100; // Ubah dengan lebar gambar yang diinginkan
+        $imageHeight3 = 100; // Ubah dengan tinggi gambar yang diinginkan
+        $imageTtd2 = '<img src="data:image/png;base64, ' . $imagedata3 . '" width="' . $imageWidth3 . '" height="' . $imageHeight3 . '">';
+
+        $peserta = $query->select('institusi','nama','nim','prodi','status')
+                    ->get();
+
+        $html = view('peserta.cetak', compact('imageLogo','imageTtd','imageTtd2','tanggalHariIni','nomorSuratBaru','peserta'));
+        $pdf = new Dompdf();
+        $pdf -> loadHtml($html); 
+        $pdf->render();
+        $pdf->stream('Surat Balasan.pdf');
+    
+    }
 
 
 

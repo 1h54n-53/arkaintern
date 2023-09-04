@@ -37,9 +37,9 @@
                                         <td>{{ $item->status }}</td>
                                         <td>
                                             <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('peserta.destroy', ['peserta' => $item->id]) }}" method="POST">
-                                                <button class="btn btn-primary text-white btn-circle btn" type="button">
+                                                <a href="{{ route('peserta.cetak',  ['id' => $item->id]) }}" class="btn btn-primary text-white btn-circle btn" type="button">
                                                     <i class="fas fa-print"></i>
-                                                </button>
+                                                </a>
                                                     <a href="https://wa.me/{{ $item->telepon }}?text=Hallo%20terima%20kasih%20telah%20mendaftar%20intership%20di%20perusahaan%20kami%20berikut%20balasan%20dari%20pendaftaran%20anda." class="btn btn-success text-white btn-circle btn" target="_blank">
                                                         <i class="fas fa-phone"></i>
                                                     </a>

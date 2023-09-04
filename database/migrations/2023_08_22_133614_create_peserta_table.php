@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('peserta', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('nim');
+            $table->string('prodi');
             $table->string('jenis_kelamin');
             $table->string('telepon');
             $table->text('alamat');

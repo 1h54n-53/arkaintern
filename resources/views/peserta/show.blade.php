@@ -22,6 +22,8 @@
                                     <thead>
                                         <tr>
                                             <th class="border-top-0">Nama</th>
+                                            <th class="border-top-0">Nim</th>
+                                            <th class="border-top-0">Prodi</th>
                                             <th class="border-top-0">Gender</th>
                                             <th class="border-top-0">Telepon</th>
                                             <th class="border-top-0">Alamat</th>
@@ -33,6 +35,8 @@
                                     @foreach ($peserta as $item)
                                     <tr>
                                         <td>{{ $item->nama }}</td>
+                                        <td>{{ $item->nim }}</td>
+                                        <td>{{ $item->prodi }}</td>
                                         <td>{{ $item->jenis_kelamin }}</td>
                                         <td>{{ $item->telepon }}</td>
                                         <td>{{ $item->alamat }}</td>

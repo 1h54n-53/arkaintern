@@ -32,6 +32,7 @@ Route::get('gallery', function () {
 
 Route::get('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('login', [AuthController::class, 'authenticating']);
+Route::get('/peserta/cetak{id}', [PesertaController::class, 'cetak'])->name('peserta.cetak');
 
 route::get('dashboard', [DashboardController::class, 'total'])->name('dashboard');
 
